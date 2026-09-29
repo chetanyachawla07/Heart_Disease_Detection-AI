@@ -110,7 +110,7 @@ PNG files in `outputs/` for visuals.
 - **Deployment**: containerize `app.py` with Docker, or turn `predict.py`
   into a Flask/FastAPI REST endpoint.
 
-## Important caveats to know/present
+## Important things to know/present
 
 - Only 303 records — a real clinical model needs much more data and external validation.
 - No demographic/geographic diversity information — the dataset may not generalize to other populations.
