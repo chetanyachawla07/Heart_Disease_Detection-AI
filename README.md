@@ -1,5 +1,6 @@
 # Heart Disease Detection — Starter Project
 BY Chetanya Aniket Tatsal Arnav
+
 A beginner-friendly machine learning project that predicts whether a patient
 has heart disease based on 13 clinical measurements (age, cholesterol, blood
 pressure, etc.). Built with Python + scikit-learn.
