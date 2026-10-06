@@ -1,5 +1,5 @@
 # Heart Disease Detection — Starter Project
-BY Chetanya Aniket Tatsal Arnav
+BY Chetanya Aniket Tatsat Arnav
 
 A beginner-friendly machine learning project that predicts whether a patient
 has heart disease based on 13 clinical measurements (age, cholesterol, blood
