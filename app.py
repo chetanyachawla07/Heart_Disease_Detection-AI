@@ -1,56 +1,81 @@
-"""
-Interactive demo app for the Heart Disease Detection model.
-Run with:  streamlit run app.py
-"""
-import streamlit as st
-import joblib
+"""Streamlit demo.  Run with:  streamlit run app.py"""
 import pandas as pd
+import streamlit as st
+
+from heart_disease.predictor import Predictor, ValidationError
+from heart_disease.schema import FEATURES
 
 st.set_page_config(page_title="Heart Disease Risk Predictor", layout="centered")
 
-model = joblib.load("models/heart_disease_model.pkl")
-scaler = joblib.load("models/scaler.pkl")
-feature_names = joblib.load("models/feature_names.pkl")
+
+@st.cache_resource
+def get_predictor() -> Predictor:
+    return Predictor.load()
+
 
 st.title("❤️ Heart Disease Risk Predictor")
-st.caption("Educational demo — not a medical device. Do not use for real diagnosis.")
+st.caption("Educational demo - not a medical device. Do not use for real diagnosis.")
 
+try:
+    predictor = get_predictor()
+except FileNotFoundError as exc:
+    st.error(str(exc))
+    st.stop()
+
+info = predictor.summary()
+st.caption(
+    f"{info['model_name']} trained on {info['n_patients']} patients - "
+    f"cross-validated ROC-AUC {info['roc_auc']:.2f} ± {info['roc_auc_std']:.2f}"
+)
+
+values = {}
 with st.form("patient_form"):
-    col1, col2 = st.columns(2)
-    with col1:
-        age = st.number_input("Age", 20, 100, 55)
-        sex = st.selectbox("Sex", ["Female", "Male"])
-        cp = st.selectbox("Chest Pain Type (0-3)", [0, 1, 2, 3])
-        trestbps = st.number_input("Resting Blood Pressure (mm Hg)", 80, 220, 130)
-        chol = st.number_input("Cholesterol (mg/dl)", 100, 600, 240)
-        fbs = st.selectbox("Fasting Blood Sugar > 120 mg/dl", ["No", "Yes"])
-        restecg = st.selectbox("Resting ECG Results (0-2)", [0, 1, 2])
-    with col2:
-        thalach = st.number_input("Max Heart Rate Achieved", 60, 220, 150)
-        exang = st.selectbox("Exercise-Induced Angina", ["No", "Yes"])
-        oldpeak = st.number_input("ST Depression (oldpeak)", 0.0, 10.0, 1.0, step=0.1)
-        slope = st.selectbox("Slope of Peak Exercise ST Segment (0-2)", [0, 1, 2])
-        ca = st.selectbox("Number of Major Vessels (0-3)", [0, 1, 2, 3])
-        thal = st.selectbox("Thalassemia (0-3)", [0, 1, 2, 3])
-
-    submitted = st.form_submit_button("Predict")
+    cols = st.columns(2)
+    for i, f in enumerate(FEATURES):
+        with cols[i % 2]:
+            label = f"{f.label} ({f.unit})" if f.unit else f.label
+            if f.kind == "choice":
+                codes = list(f.choice_codes)
+                names = dict(f.choices)
+                values[f.name] = st.selectbox(
+                    label, codes, index=codes.index(int(f.default)),
+                    format_func=lambda c, names=names: names[c], help=f.help or None,
+                )
+            elif f.integer:
+                values[f.name] = st.number_input(
+                    label, int(f.min), int(f.max), int(f.default), step=int(f.step),
+                    help=f.help or None)
+            else:
+                values[f.name] = st.number_input(
+                    label, float(f.min), float(f.max), float(f.default), step=float(f.step),
+                    help=f.help or None)
+    submitted = st.form_submit_button("Assess risk")
 
 if submitted:
-    patient = {
-        "age": age, "sex": 1 if sex == "Male" else 0, "cp": cp,
-        "trestbps": trestbps, "chol": chol,
-        "fbs": 1 if fbs == "Yes" else 0, "restecg": restecg,
-        "thalach": thalach, "exang": 1 if exang == "Yes" else 0,
-        "oldpeak": oldpeak, "slope": slope, "ca": ca, "thal": thal
-    }
-    X_new = pd.DataFrame([patient])[feature_names]
-    X_scaled = scaler.transform(X_new)
-    pred = model.predict(X_scaled)[0]
-    prob = model.predict_proba(X_scaled)[0][1]
+    try:
+        result = predictor.predict(values)
+    except ValidationError as exc:
+        for field, msg in exc.errors.items():
+            st.error(f"{field}: {msg}")
+        st.stop()
 
     st.divider()
-    if pred == 1:
-        st.error(f"⚠️ Higher risk indicated — estimated probability: {prob:.1%}")
-    else:
-        st.success(f"✅ Lower risk indicated — estimated probability: {prob:.1%}")
-    st.caption("This is a demo model trained on 303 records. It is not clinically validated.")
+    message = f"{result.label} - estimated probability {result.probability:.1%}"
+    (st.error if result.flagged else st.success)(message)
+    st.progress(min(max(result.probability, 0.0), 1.0))
+    st.caption(f"The flag is raised at {result.threshold:.0%}, chosen to catch most real cases.")
+    for w in result.warnings:
+        st.warning(w)
+    if result.factors:
+        st.subheader("What moved the estimate")
+        st.caption("Compared with a typical patient in the training data "
+                   "(odds ratio > 1 raises risk, < 1 lowers it).")
+        st.dataframe(
+            pd.DataFrame([
+                {"Factor": f.label, "Value": f.value,
+                 "Effect": f.to_dict()["direction"], "Odds ×": round(f.odds_ratio, 2)}
+                for f in result.factors
+            ]),
+            hide_index=True, use_container_width=True,
+        )
+    st.caption("Trained on ~300 records. Not clinically validated.")

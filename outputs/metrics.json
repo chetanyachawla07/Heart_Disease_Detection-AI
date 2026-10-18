@@ -1,0 +1,224 @@
+{
+  "project_version": "2.0.0",
+  "seed": 42,
+  "fast_mode": false,
+  "data_sha256": "e31e52eb5ee890c1a11a3baef3df95e8174718d5b94b0a8b77665ec3c07328ff",
+  "cleaning": {
+    "rows_raw": 303,
+    "duplicates_dropped": 1,
+    "invalid_codes_set_missing": {
+      "ca": 4,
+      "thal": 2
+    },
+    "rows_clean": 302,
+    "positives": 138
+  },
+  "cv": {
+    "outer_folds": 10,
+    "metric_note": "mean/std over outer folds, hyper-parameters tuned in an inner loop; threshold-based metrics at 0.5"
+  },
+  "models": {
+    "Random Forest": {
+      "roc_auc_mean": 0.9167,
+      "avg_precision_mean": 0.9145,
+      "accuracy_mean": 0.8443,
+      "precision_mean": 0.8573,
+      "recall_mean": 0.7892,
+      "f1_mean": 0.8203,
+      "kappa_mean": 0.6836,
+      "mcc_mean": 0.6869,
+      "brier_mean": 0.1241,
+      "roc_auc_std": 0.0446,
+      "avg_precision_std": 0.0398,
+      "accuracy_std": 0.0564,
+      "precision_std": 0.0603,
+      "recall_std": 0.0926,
+      "f1_std": 0.0725,
+      "kappa_std": 0.1168,
+      "mcc_std": 0.1151,
+      "brier_std": 0.024
+    },
+    "Logistic Regression": {
+      "roc_auc_mean": 0.9151,
+      "avg_precision_mean": 0.9134,
+      "accuracy_mean": 0.8475,
+      "precision_mean": 0.8763,
+      "recall_mean": 0.7783,
+      "f1_mean": 0.821,
+      "kappa_mean": 0.6894,
+      "mcc_mean": 0.6966,
+      "brier_mean": 0.1168,
+      "roc_auc_std": 0.0497,
+      "avg_precision_std": 0.0428,
+      "accuracy_std": 0.0529,
+      "precision_std": 0.0633,
+      "recall_std": 0.099,
+      "f1_std": 0.0681,
+      "kappa_std": 0.1093,
+      "mcc_std": 0.106,
+      "brier_std": 0.0312
+    },
+    "Gradient Boosting": {
+      "roc_auc_mean": 0.9114,
+      "avg_precision_mean": 0.9097,
+      "accuracy_mean": 0.8524,
+      "precision_mean": 0.8719,
+      "recall_mean": 0.7927,
+      "f1_mean": 0.8271,
+      "kappa_mean": 0.6995,
+      "mcc_mean": 0.7053,
+      "brier_mean": 0.1179,
+      "roc_auc_std": 0.0487,
+      "avg_precision_std": 0.0416,
+      "accuracy_std": 0.0551,
+      "precision_std": 0.0483,
+      "recall_std": 0.1131,
+      "f1_std": 0.0757,
+      "kappa_std": 0.1154,
+      "mcc_std": 0.1105,
+      "brier_std": 0.0262
+    },
+    "SVM (RBF)": {
+      "roc_auc_mean": 0.911,
+      "avg_precision_mean": 0.9109,
+      "accuracy_mean": 0.8475,
+      "precision_mean": 0.8713,
+      "recall_mean": 0.7896,
+      "f1_mean": 0.8225,
+      "kappa_mean": 0.6901,
+      "mcc_mean": 0.6995,
+      "brier_mean": 0.1188,
+      "roc_auc_std": 0.0484,
+      "avg_precision_std": 0.0411,
+      "accuracy_std": 0.0475,
+      "precision_std": 0.0723,
+      "recall_std": 0.1128,
+      "f1_std": 0.0648,
+      "kappa_std": 0.0992,
+      "mcc_std": 0.0969,
+      "brier_std": 0.0333
+    },
+    "Gaussian Naive Bayes": {
+      "roc_auc_mean": 0.9082,
+      "avg_precision_mean": 0.8977,
+      "accuracy_mean": 0.8375,
+      "precision_mean": 0.8291,
+      "recall_mean": 0.8148,
+      "f1_mean": 0.8187,
+      "kappa_mean": 0.6718,
+      "mcc_mean": 0.6761,
+      "brier_mean": 0.1311,
+      "roc_auc_std": 0.0439,
+      "avg_precision_std": 0.0376,
+      "accuracy_std": 0.0525,
+      "precision_std": 0.0616,
+      "recall_std": 0.1011,
+      "f1_std": 0.065,
+      "kappa_std": 0.1078,
+      "mcc_std": 0.1074,
+      "brier_std": 0.046
+    },
+    "Majority baseline": {
+      "roc_auc_mean": 0.5,
+      "avg_precision_mean": 0.4569,
+      "accuracy_mean": 0.5431,
+      "precision_mean": 0.0,
+      "recall_mean": 0.0,
+      "f1_mean": 0.0,
+      "kappa_mean": 0.0,
+      "mcc_mean": 0.0,
+      "brier_mean": 0.2482,
+      "roc_auc_std": 0.0,
+      "avg_precision_std": 0.0067,
+      "accuracy_std": 0.0067,
+      "precision_std": 0.0,
+      "recall_std": 0.0,
+      "f1_std": 0.0,
+      "kappa_std": 0.0,
+      "mcc_std": 0.0,
+      "brier_std": 0.0006
+    }
+  },
+  "chosen_model": "Logistic Regression",
+  "selection_reason": "Random Forest scored highest, but Logistic Regression is within one standard error (0.014) and simpler, so it was preferred.",
+  "best_params": {
+    "clf__C": 0.1
+  },
+  "operating_point_oof": {
+    "threshold": 0.2731,
+    "recall": 0.9058,
+    "specificity": 0.7073,
+    "precision": 0.7225,
+    "tp": 125,
+    "fp": 48,
+    "tn": 116,
+    "fn": 13
+  },
+  "operating_point_note": "Threshold was chosen on the same out-of-fold predictions it is reported on, so recall here is slightly optimistic.",
+  "permutation_importance": {
+    "age": {
+      "mean": -0.0017,
+      "std": 0.0029
+    },
+    "sex": {
+      "mean": 0.0122,
+      "std": 0.0091
+    },
+    "cp": {
+      "mean": 0.0284,
+      "std": 0.0099
+    },
+    "trestbps": {
+      "mean": 0.0027,
+      "std": 0.0055
+    },
+    "chol": {
+      "mean": -0.0007,
+      "std": 0.0037
+    },
+    "fbs": {
+      "mean": -0.0007,
+      "std": 0.0029
+    },
+    "restecg": {
+      "mean": 0.0001,
+      "std": 0.0071
+    },
+    "thalach": {
+      "mean": 0.0079,
+      "std": 0.0089
+    },
+    "exang": {
+      "mean": 0.0061,
+      "std": 0.0049
+    },
+    "oldpeak": {
+      "mean": 0.0091,
+      "std": 0.0102
+    },
+    "slope": {
+      "mean": 0.0098,
+      "std": 0.0063
+    },
+    "ca": {
+      "mean": 0.0651,
+      "std": 0.0186
+    },
+    "thal": {
+      "mean": 0.0379,
+      "std": 0.0176
+    }
+  },
+  "trained_at": "2026-10-18T07:13:58+00:00",
+  "sklearn_version": "1.8.0",
+  "plots": [
+    "01_correlation_heatmap.png",
+    "02_class_balance.png",
+    "03_model_comparison.png",
+    "04_roc_curve.png",
+    "05_confusion_matrix.png",
+    "06_calibration.png",
+    "07_threshold_tradeoff.png",
+    "08_permutation_importance.png"
+  ]
+}

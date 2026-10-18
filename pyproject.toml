@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "heart-disease-detection"
+dynamic = ["version"]
+description = "Educational heart disease risk model with a Flask web app and Streamlit demo"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pandas>=2.0,<4",
+    "numpy>=1.24,<3",
+    "scikit-learn>=1.3,<2",
+    "joblib>=1.3",
+]
+
+[project.optional-dependencies]
+train = ["matplotlib>=3.7", "seaborn>=0.12"]
+web = ["flask>=2.3,<4"]
+streamlit = ["streamlit>=1.30"]
+dev = ["pytest>=7.4", "ruff>=0.5"]
+
+[tool.setuptools.dynamic]
+version = { attr = "heart_disease.__version__" }
+
+[tool.setuptools.packages.find]
+include = ["heart_disease*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["ignore::DeprecationWarning"]

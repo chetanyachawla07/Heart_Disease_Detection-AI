@@ -48,7 +48,7 @@ heart_disease_project/
 
 1. **Install dependencies**
    ```bash
-   pip install -r requirements.txt
+   pip install 
    ```
 
 2. **Train the models**
