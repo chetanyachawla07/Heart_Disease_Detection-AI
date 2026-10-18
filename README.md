@@ -112,6 +112,6 @@ PNG files in `outputs/` for visuals.
 
 ## Important things to know/present
 
-- Only 303 records — a real clinical model needs much more data and external validation.
-- No demographic/geographic diversity information — the dataset may not generalize to other populations.
+   - Only 303 records — a real clinical model needs much more data and external validation.
+   - No demographic/geographic diversity information — the dataset may not generalize to other populations.
 - This should be framed as a *decision-support/educational* tool, never a diagnostic one, in any write-up or presentation.
