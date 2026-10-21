@@ -1,4 +1,5 @@
 # Heart Disease Detection — Starter Project
+BY Chetanya Aniket Tatsat Arnav
 
 A beginner-friendly machine learning project that predicts whether a patient
 has heart disease based on 13 clinical measurements (age, cholesterol, blood
@@ -9,7 +10,7 @@ should never be used for real diagnosis.
 
 ## Dataset
 
-The UCI Cleveland Heart Disease dataset (303 patient records, 13 features +
+The UCI Heart Disease dataset (303 patient records, 13 features +
 1 label). Already included at `data/heart.csv`.
 
 | Column | Meaning |
@@ -85,7 +86,7 @@ heart_disease_project/
    Then open `http://localhost:5000` in your browser. This is a proper web
    page (not Streamlit) — a two-column layout with patient input fields and
    a live risk result, built with plain HTML/CSS/JS talking to a Flask API
-   (`/predict`). This is the one to show your team/professor as the "frontend."
+   (`/predict`). This is the one as the "frontend."
 
 ## What the results mean
 
@@ -105,8 +106,6 @@ PNG files in `outputs/` for visuals.
 - **Explainability**: add SHAP values so predictions can be explained per-patient.
 - **Bigger dataset**: this one has only 303 rows — look at the UCI/Kaggle
   "Heart Disease Health Indicators" dataset (~250k rows) for a more robust model.
-- **Validation**: get a domain expert (or literature) to sanity-check which
-  features the model is relying on (`outputs/05_feature_importance.png`).
 - **Deployment**: containerize `app.py` with Docker, or turn `predict.py`
   into a Flask/FastAPI REST endpoint.
 
