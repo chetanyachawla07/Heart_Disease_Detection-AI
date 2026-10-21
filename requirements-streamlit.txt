@@ -1,0 +1,3 @@
+# Adds the optional Streamlit demo (app.py)
+-r requirements.txt
+streamlit>=1.30

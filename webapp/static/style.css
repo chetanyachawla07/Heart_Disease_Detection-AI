@@ -141,9 +141,27 @@ h1, h2 {
   gap: 6px;
 }
 
-.field span {
+.field label {
   font-size: 13px;
   color: var(--ink-soft);
+}
+
+.field .unit { color: #8A989D; }
+
+.hint {
+  font-size: 12px;
+  color: #8A989D;
+  line-height: 1.35;
+}
+
+.error {
+  font-size: 12px;
+  color: var(--coral);
+  min-height: 0;
+}
+
+.field [aria-invalid="true"] {
+  border-color: var(--coral);
 }
 
 .field input,
@@ -181,10 +199,104 @@ button[type="submit"]:hover {
   background: var(--teal);
 }
 
+button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+button.secondary {
+  margin-top: 32px;
+  background: transparent;
+  color: var(--ink-soft);
+  border: 1px solid var(--border);
+  padding: 12px 22px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+button.secondary:hover { border-color: var(--ink-soft); }
+
+button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
 /* RESULT */
 .result {
   margin-top: 32px;
-  max-width: 420px;
+  max-width: 560px;
+}
+
+.meter {
+  position: relative;
+  height: 8px;
+  background: #E7ECEA;
+  border-radius: 4px;
+  margin: 14px 0 6px;
+}
+
+.meter-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 4px;
+  background: var(--green);
+  transition: width 0.5s ease;
+}
+
+.result.risk .meter-fill { background: var(--coral); }
+
+.meter-mark {
+  position: absolute;
+  top: -4px;
+  width: 2px;
+  height: 16px;
+  background: var(--ink);
+}
+
+.meter-note {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin: 4px 0 0;
+}
+
+.warnings {
+  margin: 12px 0 0;
+  padding: 0 0 0 18px;
+  font-size: 13px;
+  color: #8A5A00;
+}
+
+.result h3 {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  margin: 20px 0 0;
+}
+
+.factors {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  font-size: 13px;
+}
+
+.factors li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.factors .up strong { color: var(--coral); font-weight: 600; white-space: nowrap; }
+.factors .down strong { color: var(--green); font-weight: 600; white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  .meter-fill { transition: none; }
 }
 
 .result-inner {

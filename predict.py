@@ -1,27 +1,54 @@
+"""Predict for one patient from the command line.
+
+    python predict.py                              # built-in example patient
+    python predict.py --age 62 --sex 1 --chol 300  # override any field
+    python predict.py --json                       # machine-readable output
+
+Fields you don't pass fall back to the example patient.
 """
-Load the trained model and make a prediction for a single new patient.
-Run with:  python predict.py
-"""
-import joblib
-import pandas as pd
+import argparse
+import json
+import sys
 
-model = joblib.load("models/heart_disease_model.pkl")
-scaler = joblib.load("models/scaler.pkl")
-feature_names = joblib.load("models/feature_names.pkl")
+from heart_disease.predictor import Predictor, ValidationError
+from heart_disease.schema import EXAMPLE_PATIENT, FEATURES
 
-# Example patient - replace these values with a real record to test
-new_patient = {
-    "age": 58, "sex": 1, "cp": 0, "trestbps": 140, "chol": 289,
-    "fbs": 0, "restecg": 0, "thalach": 145, "exang": 1,
-    "oldpeak": 0.8, "slope": 1, "ca": 1, "thal": 3
-}
 
-X_new = pd.DataFrame([new_patient])[feature_names]
-X_new_scaled = scaler.transform(X_new)
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawTextHelpFormatter)
+    for f in FEATURES:
+        extra = f" (codes: {', '.join(f'{c}={t}' for c, t in f.choices)})" if f.choices else ""
+        ap.add_argument(f"--{f.name}", type=float, help=f"{f.label}{extra}")
+    ap.add_argument("--model", help="path to a model file (default: models/heart_model.joblib)")
+    ap.add_argument("--json", action="store_true", help="print JSON instead of text")
+    args = ap.parse_args(argv)
 
-prediction = model.predict(X_new_scaled)[0]
-probability = model.predict_proba(X_new_scaled)[0][1]
+    patient = {f.name: getattr(args, f.name) for f in FEATURES}
+    patient = {k: (v if v is not None else EXAMPLE_PATIENT[k]) for k, v in patient.items()}
 
-print("Patient data:", new_patient)
-print(f"\nPrediction: {'Heart Disease Likely' if prediction == 1 else 'No Heart Disease Detected'}")
-print(f"Model confidence (probability of disease): {probability:.1%}")
+    try:
+        result = Predictor.load(args.model).predict(patient)
+    except (FileNotFoundError, ValidationError) as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 2
+
+    if args.json:
+        print(json.dumps({"patient": patient, **result.to_dict()}, indent=2))
+        return 0
+
+    print("Patient:", patient)
+    print(f"\n{result.label}  (estimated probability {result.probability:.1%}, "
+          f"flag threshold {result.threshold:.0%})")
+    for w in result.warnings:
+        print(f"  ! {w}")
+    if result.factors:
+        print("\nWhat moved the estimate (vs. a typical patient in the training data):")
+        for fac in result.factors:
+            print(f"  - {fac.label} = {fac.value}: {fac.to_dict()['direction']} "
+                  f"the odds of disease (x{fac.odds_ratio:.2f})")
+    print("\nEducational model only - not a medical device.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
